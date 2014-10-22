@@ -1,0 +1,36 @@
+PPDU_ROACH2_reboot 
+Given with a parameter, ROACH2 number or ‘0’ for all, to reboot one or all outlets.
+
+[bchitwoo@obscon Development]$ PDU_ROACH2_reboot 2
+Rebooting ROACH2-02
+Initial state of all PDUs = 1 1 1 1 1 1 1 1
+Rebooting ROACH2-02
+PDU-MIB::pdu01OutletStatus.0 = STRING: "1,0,1,1,1,1,1,1"
+ROACH2-02 off.
+PDU-MIB::pdu01OutletStatus.0 = STRING: "1,1,1,1,1,1,1,1"
+ROACH2-02 back on. Give it a minute to get its IP address.
+
+PDU_ROACH2_status
+Entered without any parameter, which simply returns the status of the outlets.
+[bchitwoo@obscon]$ PDU_ROACH2_status
+Initial state of all PDUs (0 is OFF, 1 is ON)
+ROACH2-01 2 3 4 5 6 7 8
+        1 1 1 1 1 1 1 1
+
+PDU_ROACH2_off
+Given with a parameter, ROACH2 number or ‘0’ for all, to turn an individual, or all, outlets off.
+[bchitwoo@obscon]$ PDU_ROACH2_off 2
+Initial state of all PDUs = 1 1 1 1 1 1 1 1
+Turning off ROACH2-02!
+PDU-MIB::pdu01OutletStatus.0 = STRING: "1,0,1,1,1,1,1,1"
+ROACH2-02 off.
+
+
+PDU_ROACH2_on
+Given with a parameter, ROACH2 number or ‘0’ for all, to turn an individual, or all, outlets on.
+[bchitwoo@obscon]$ PDU_ROACH2_on 2
+Initial state of all PDUs = 1 0 1 1 1 1 1 1
+Turning on ROACH2-02
+PDU-MIB::pdu01OutletStatus.0 = STRING: "1,1,1,1,1,1,1,1"
+ROACH2-02 back on. If previously off, give it a minute to get its IP address.
+

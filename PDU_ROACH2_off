@@ -1,0 +1,57 @@
+#!/usr/bin/perl -w
+#####################################################################
+#                        PDU_ROACH2_on
+#
+# This Perl script uses SNMB and the opengear PDUMIB to turn off the  
+# outlets of the ROACH2s currently in DR8, without having to go through  
+# the Web page interface.
+# I will need to generalize this script as the SWARM is expanded.
+#
+# Initial Release									                         2014_07_14
+#
+# Billie Chitwood:     bchitwood@cfa.harvard.edu
+#####################################################################
+my $sleepTime = 5; # Number of seconds to leave the outlet off before restarting.
+my $ROACH2num = 9;
+my $debug = 0;
+if(!defined $ARGV[0])
+	{
+  print "No initialization argument specified!\n";
+  print "Must be a ROACH2 number, 1-8, or 0 for all.\n";
+  exit;
+
+	}
+	else
+	{
+    $ROACH2num = $ARGV[0];
+    if ($ROACH2num > 8 )
+    	{
+    	print "$ROACH2num not a valid parameter. Must be a ROACH2 number, 1-8, or 0 for all.\n";
+    	exit;
+			}
+		}
+
+my $returnString = `snmpget -v1  -Oa -M.:/usr/share/snmp/mibs -c public 172.22.4.63 PDU-MIB::pdu01OutletStatus.0`;
+if ($debug)	{print "returnString= $returnString\n"};
+my @State = split(/,/, $returnString);
+$State[0] = chop($State[0]);
+$State[7] =  substr($State[7], 0, -2);
+print "Initial state of all PDUs = @State\n";
+
+if ($ROACH2num == 0)
+		{
+		print "Turning off all ROACH2s!\n";
+		system("snmpset -v1  -Oa -M.:/usr/share/snmp/mibs -c public 172.22.4.63 PDU-MIB::pdu01OutletStatus.0  s \"0,0,0,0,0,0,0,0\"");
+		print "All ROACH2s off.\n";
+		}
+		else
+		{
+		my $Arraynum = $ROACH2num-1;
+		print "Turning off ROACH2-0$ROACH2num!\n";
+		$State[$Arraynum] = 0;			
+		if ($debug)	{print "State[$Arraynum]= $State[$Arraynum]\n"};	
+		system("snmpset -v1  -Oa -M.:/usr/share/snmp/mibs -c public 172.22.4.63 PDU-MIB::pdu01OutletStatus.0  s \"$State[0],$State[1],$State[2],$State[3],$State[4],$State[5],$State[6],$State[7]\"");
+		print "ROACH2-0$ROACH2num off.\n";
+		}
+
+

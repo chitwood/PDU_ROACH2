@@ -1,0 +1,27 @@
+#!/usr/bin/perl -w
+#####################################################################
+#                        PDU_ROACH2_status
+#
+# This Perl script uses SNMB and the opengear PDUMIB to obtain status  
+# of the ROACH2s currently in DR8, without having to go through the 
+# excruciatingly slow (if off-site) Web page interface.
+# I will need to generalize this script as the SWARM is expanded.
+#
+# Initial Release									                         2014_07_14
+#
+# Billie Chitwood:     bchitwood@cfa.harvard.edu
+#####################################################################
+my $sleepTime = 5; # Number of seconds to leave the outlet off before restarting.
+my $ROACH2num = 9;
+my $debug = 0;
+
+my $returnString = `snmpget -v1  -Oa -M.:/usr/share/snmp/mibs -c public 172.22.4.63 PDU-MIB::pdu01OutletStatus.0`;
+if ($debug)	{print "returnString= $returnString\n"};
+my @State = split(/,/, $returnString);
+$State[0] = chop($State[0]);
+$State[7] =  substr($State[7], 0, -2);
+print "Initial state of all PDUs (0 is OFF, 1 is ON)\n";
+print "ROACH2-01 2 3 4 5 6 7 8\n";
+print "        @State\n";
+
+
